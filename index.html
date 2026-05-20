@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  
+<h2 class="sr-only">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+
+body{font-family:var(--font-sans)}
+.tabs{display:flex;gap:8px;margin-bottom:1.25rem;flex-wrap:wrap}
+.tab{padding:6px 14px;border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);font-size:13px;cursor:pointer;background:var(--color-background-primary);color:var(--color-text-secondary)}
+.tab.active{background:var(--color-background-info);color:var(--color-text-info);border-color:var(--color-border-info)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px}
+.card{border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:0.85rem;cursor:pointer;background:var(--color-background-primary);transition:border-color .15s}
+.card:hover{border-color:var(--color-border-primary)}
+.card.open{border:2px solid var(--color-border-info)}
+.card-name{font-size:14px;font-weight:500;color:var(--color-text-primary);margin-bottom:4px}
+.card-role{font-size:12px;color:var(--color-text-secondary)}
+.card-dates{font-size:11px;color:var(--color-text-secondary);margin-bottom:8px}
+.card-detail{font-size:12px;color:var(--color-text-primary);line-height:1.6;margin-top:8px;border-top:0.5px solid var(--color-border-tertiary);padding-top:8px;display:none}
+.card.open .card-detail{display:block}
+.badge{display:inline-block;font-size:11px;padding:2px 8px;border-radius:var(--border-radius-md);margin-bottom:6px}
+.b-red{background:var(--color-background-danger);color:var(--color-text-danger)}
+.b-blue{background:var(--color-background-info);color:var(--color-text-info)}
+.b-green{background:var(--color-background-success);color:var(--color-text-success)}
+.b-amber{background:var(--color-background-warning);color:var(--color-text-warning)}
+.section-title{font-size:13px;font-weight:500;color:var(--color-text-secondary);margin-bottom:0.75rem;letter-spacing:.03em}
+.hint{font-size:12px;color:var(--color-text-secondary);margin-bottom:1rem}
+.timeline{border-left:2px solid var(--color-border-secondary);padding-left:1rem;display:flex;flex-direction:column;gap:12px}
+.titem{position:relative}
+.titem::before{content:'';width:8px;height:8px;border-radius:50%;background:var(--color-background-info);border:2px solid var(--color-border-info);position:absolute;left:-1.35rem;top:3px}
+.tdate{font-size:11px;color:var(--color-text-secondary)}
+.tevent{font-size:13px;color:var(--color-text-primary);font-weight:500}
+.tdesc{font-size:12px;color:var(--color-text-secondary);line-height:1.5}
+</style>
+
+<div style="padding:1rem 0">
+<div class="tabs">
+  <button class="tab active" onclick="show('osoby')">👤 Postacie</button>
+  <button class="tab" onclick="show('daty')">📅 Daty</button>
+  <button class="tab" onclick="show('pojecia')">📖 Pojęcia</button>
+</div>
+
+<div id="osoby">
+  <p class="hint">Kliknij kartę, żeby zobaczyć szczegóły. To są postaci, o które najczęściej pyta nauczyciel.</p>
+  <p class="section-title">ZAŁOŻYCIELE I KRÓLOWIE</p>
+  <div class="grid" style="margin-bottom:1.25rem" id="grid-krolowie"></div>
+  <p class="section-title">REPUBLIKA – WAŻNE POSTACIE</p>
+  <div class="grid" style="margin-bottom:1.25rem" id="grid-republika"></div>
+  <p class="section-title">KONIEC REPUBLIKI I CESARSTWO</p>
+  <div class="grid" id="grid-cesarstwo"></div>
+</div>
+
+<div id="daty" style="display:none">
+  <div class="timeline" id="timeline"></div>
+</div>
+
+<div id="pojecia" style="display:none">
+  <div class="grid" id="grid-pojecia"></div>
+</div>
+</div>
+
+<script>
+const osoby = {
+  krolowie: [
+    {name:"Romulus",dates:"ok. 753–716 p.n.e.",role:"Legendarny założyciel Rzymu",badge:"b-red",badgeText:"Król",detail:"Według legendy założył Rzym w 753 p.n.e. i był pierwszym królem. Zabił brata Remusa. Stworzył instytucje: Senat (100 senatorów), podział na patrycjuszy i plebejuszy."},
+    {name:"Numa Pompiliusz",dates:"715–673 p.n.e.",role:"Drugi król Rzymu",badge:"b-red",badgeText:"Król",detail:"Tworzył instytucje religijne, kapłanów i kalendarze. Uważany za króla pokoju i prawodawcę religijnego."},
+    {name:"Tullus Hostyliusz",dates:"673–641 p.n.e.",role:"Trzeci król",badge:"b-red",badgeText:"Król",detail:"Wojowniczy król, zniszczył Alba Longę. Słynna bitwa Horacjuszy z Kuracjuszami – Roma pokonała Albę."},
+    {name:"Ankus Marcjusz",dates:"640–616 p.n.e.",role:"Czwarty król",badge:"b-red",badgeText:"Król",detail:"Założył Ostię (port Rzymu). Rozszerzył Rzym o Janikul (wzgórze za Tybrem)."},
+    {name:"Tarkwiniusz Pyszny",dates:"534–509 p.n.e.",role:"Ostatni król Rzymu",badge:"b-red",badgeText:"Król",detail:"Tyran, obalony po tym jak jego syn Sekstus zgwałcił Lukrecję. Wygnanie Tarkwiniusza w 509 p.n.e. zakończyło epokę królów i dało początek Republice."},
+  ],
+  republika: [
+    {name:"Lukrecja",dates:"ok. 509 p.n.e.",role:"Symbol honoru – powód obalenia króla",badge:"b-amber",badgeText:"Symbol",detail:"Patrycjuszka, zgwałcona przez Sekstusa Tarkwiniusza. Opowiedziała o tym mężowi i ojcu, po czym popełniła samobójstwo. Jej śmierć wywołała powstanie i obalenie króla."},
+    {name:"Lucjusz Juniusz Brutus",dates:"ok. 509 p.n.e.",role:"Założyciel Republiki, pierwszy konsul",badge:"b-blue",badgeText:"Konsul",detail:"Stanął na czele powstania przeciw Tarkwiniuszowi. Razem z Tarkwiniuszem Kolatinem został pierwszym konsulem Republiki. Skazał na śmierć własnych synów za spisek na rzecz króla."},
+    {name:"Cynycynat",dates:"519–430 p.n.e.",role:"Dyktator, wzór cnót obywatelskich",badge:"b-blue",badgeText:"Dyktator",detail:"Wezwany od pługa na dyktatora – w 16 dni pokonał wrogów i wrócił do pracy na roli. Symbol bezinteresownej służby ojczyźnie. Konserwatywny wzorzec Rzymianina."},
+    {name:"Scypion Afrykański",dates:"236–183 p.n.e.",role:"Pogromca Hannibala",badge:"b-blue",badgeText:"Dowódca",detail:"Pokonał Hannibala w bitwie pod Zamą (202 p.n.e.), kończąc II wojnę punicką. Przydomek 'Afrykański' otrzymał za zwycięstwo w Afryce. Jeden z największych dowódców republiki."},
+    {name:"Grakchowie (Tyberiusz i Gajusz)",dates:"163–121 p.n.e.",role:"Trybunowie, reformatorzy",badge:"b-green",badgeText:"Trybunowie",detail:"Bracia, trybunowie ludowi. Chcieli reformy rolnej – oddać ziemię ubogim. Obaj zginęli w zamieszkach (Tyberiusz 133 p.n.e., Gajusz 121 p.n.e.). Symbol walki plebejuszy z senatorstwem."},
+    {name:"Mariusz",dates:"157–86 p.n.e.",role:"Reformator armii, 7× konsul",badge:"b-blue",badgeText:"Konsul",detail:"Przeprowadził reformę armii – stworzył armię zawodową (zaciąg ochotniczy). Pokonał Jugurtę i Germanów. Stronnik popularów (ludowców). Siedmiokrotny konsul – rekord republiki."},
+    {name:"Sulla",dates:"138–78 p.n.e.",role:"Dyktator, optymata",badge:"b-red",badgeText:"Dyktator",detail:"Pierwszy, który wkroczył z legionami do Rzymu. Dyktator w 82 p.n.e. Wprowadził listy proskrypcyjne (lista wrogów do zabicia). Optymata – bronił władzy senatu. Dobrowolnie zrzekł się dyktatury."},
+  ],
+  cesarstwo: [
+    {name:"Juliusz Cezar",dates:"100–44 p.n.e.",role:"Wódz, dyktator, polityk",badge:"b-red",badgeText:"Dyktator",detail:"Podbił Galię (58–50 p.n.e.). Przekroczył Rubikon (49 p.n.e.) – wojnę domową z Pompejuszem. Dyktatorem dożywotnim od 44 p.n.e. Zamordowany w idy marcowe (15 marca 44 p.n.e.) przez Brutusa i Kasjusza. Przeprowadził reformę kalendarza (kalendarz juliański)."},
+    {name:"Kleopatra VII",dates:"69–30 p.n.e.",role:"Królowa Egiptu, sojuszniczka Cezara i Antoniusza",badge:"b-amber",badgeText:"Królowa",detail:"Egipska królowa, kochanka Cezara (miała z nim syna Cezariona) i Marka Antoniusza. Po klęsce Antoniusza pod Akcjum (31 p.n.e.) popełniła samobójstwo. Egipt stał się prowincją Rzymu."},
+    {name:"Marek Antoniusz",dates:"83–30 p.n.e.",role:"Triumwir, rywal Oktawiana",badge:"b-blue",badgeText:"Triumwir",detail:"Po śmierci Cezara tworzył II triumwirat z Oktawianem i Lepidusem. Zakochał się w Kleopatrze. Pokonany pod Akcjum (31 p.n.e.) przez Oktawiana – popełnił samobójstwo."},
+    {name:"Oktawian August",dates:"63 p.n.e. – 14 n.e.",role:"Pierwszy cesarz Rzymu",badge:"b-green",badgeText:"Cesarz",detail:"Adoptowany syn Cezara. Pokonał Antoniusza pod Akcjum (31 p.n.e.). Od 27 p.n.e. nosił tytuł Augusta – faktycznie pierwszy cesarz. Pax Romana – epoka pokoju i rozkwitu. Reformował armię, administrację, budownictwo ('zastałem Rzym z cegły, zostawiam z marmuru')."},
+    {name:"Neron",dates:"37–68 n.e.",role:"Cesarz, tyran",badge:"b-red",badgeText:"Cesarz",detail:"Cesarz od 54 n.e. Oskarżany o podpalenie Rzymu (64 n.e.) – prześladował chrześcijan jako kozłów ofiarnych. Zamordował matkę Agryppinę i żonę Oktawię. Popełnił samobójstwo po buncie armii."},
+    {name:"Konstantyn Wielki",dates:"272–337 n.e.",role:"Cesarz, legalizował chrześcijaństwo",badge:"b-green",badgeText:"Cesarz",detail:"Edykt mediolański (313 n.e.) – zalegalizował chrześcijaństwo. Przeniósł stolicę do Konstantynopola (330 n.e.). Przed bitwą na Moście Mulwijskim (312 n.e.) ujrzał znak krzyża. Ochrzcił się przed śmiercią."},
+  ]
+};
+
+const daty = [
+  {date:"753 p.n.e.",event:"Założenie Rzymu",desc:"Romulus zakłada Rzym (data legendarna). Początek epoki królewskiej."},
+  {date:"509 p.n.e.",event:"Powstanie Republiki",desc:"Obalenie Tarkwiniusza Pysznego. Pierwsi konsulowie: Brutus i Tarkwiniusz Kolatin."},
+  {date:"494 p.n.e.",event:"Pierwsza secesja plebejuszy",desc:"Plebejusze opuścili Rzym na Górę Świętą – wywalczyli urząd trybuna ludowego."},
+  {date:"451–450 p.n.e.",event:"Prawo XII tablic",desc:"Pierwsze spisane prawo rzymskie. Kodeks wywieszony na Forum."},
+  {date:"390 p.n.e.",event:"Najazd Galów",desc:"Galia podpaliła Rzym. Ocalała Kapitol (gęsi Junony ostrzegły obrońców)."},
+  {date:"264–241 p.n.e.",event:"I wojna punicka",desc:"Rzym vs Kartagina. Rzym zdobył Sycylię – pierwszą prowincję."},
+  {date:"218–201 p.n.e.",event:"II wojna punicka",desc:"Hannibal przekroczył Alpy, pokonał Rzym pod Kannami (216). Scypion pokonał Hannibala pod Zamą (202)."},
+  {date:"133–121 p.n.e.",event:"Reformy Grakchów",desc:"Tyberiusz (133) i Gajusz (121) – reforma rolna, obaj zginęli w zamieszkach."},
+  {date:"82–79 p.n.e.",event:"Dyktatura Sulli",desc:"Sulla – listy proskrypcyjne, terror. Dobrowolnie zrzekł się władzy."},
+  {date:"60 p.n.e.",event:"I triumwirat",desc:"Cezar, Pompejusz, Krassus – nieformalne porozumienie o podziale wpływów."},
+  {date:"58–50 p.n.e.",event:"Podbój Galii przez Cezara",desc:"Cezar podbił dzisiejszą Francję, zdobył sławę i bogactwo."},
+  {date:"49 p.n.e.",event:"Cezar przekracza Rubikon",desc:"'Kości zostały rzucone' – Cezar wkroczył do Italii z armią → wojna domowa z Pompejuszem."},
+  {date:"44 p.n.e. (15 marca)",event:"Zabójstwo Cezara",desc:"Idy marcowe – Brutus, Kasjusz i in. zamordowali Cezara w kurii Pompejusza."},
+  {date:"43 p.n.e.",event:"II triumwirat",desc:"Oktawian, Antoniusz, Lepidus – oficjalny triumwirat."},
+  {date:"31 p.n.e.",event:"Bitwa pod Akcjum",desc:"Oktawian pokonał Antoniusza i Kleopatrę. Koniec republiki."},
+  {date:"27 p.n.e.",event:"Początek Cesarstwa",desc:"Oktawian otrzymuje tytuł Augusta – pierwszy cesarz. Początek Pax Romana."},
+  {date:"313 n.e.",event:"Edykt mediolański",desc:"Konstantyn legalizuje chrześcijaństwo w Cesarstwie."},
+  {date:"476 n.e.",event:"Upadek Zachodniego Cesarstwa",desc:"Odoaker obalił ostatniego cesarza Romulusa Augustulusa – koniec starożytności."},
+];
+
+const pojecia = [
+  {name:"Patrycjusze",detail:"Rdzenni obywatele Rzymu, arystokracja – mieli pełne prawa polityczne, zasiadali w Senacie, zajmowali urzędy. Przeciwieństwo plebejuszy.",badge:"b-blue",badgeText:"Społeczeństwo"},
+  {name:"Plebejusze",detail:"Wolni obywatele, ale bez praw politycznych na początku republiki. Walczyli o równouprawnienie przez secesje i trybunów ludowych. Z czasem zrównali prawa z patrycjuszami.",badge:"b-blue",badgeText:"Społeczeństwo"},
+  {name:"Konsulowie",detail:"Dwaj najwyżsi urzędnicy republiki, wybierani na rok. Zastąpili króla. Każdy mógł zawetować decyzję drugiego (collegialność). Dowodzili armią.",badge:"b-green",badgeText:"Urzędy"},
+  {name:"Senat",detail:"Organ doradczy, potem najważniejszy w republice. Ok. 300–600 senatorów (patrycjusze, potem też plebejusze). Decydował o finansach, polityce zagranicznej, prowincjach.",badge:"b-green",badgeText:"Urzędy"},
+  {name:"Dyktator",detail:"Nadzwyczajny urząd w czasie kryzysu – mianowany przez konsula na maks. 6 miesięcy. Miał pełnię władzy. Przykład: Cynycynat, Sulla, Cezar (dożywotnio).",badge:"b-red",badgeText:"Urzędy"},
+  {name:"Trybun ludowy",detail:"Urzędnik wybierany przez plebejuszy – chronił ich przed patrycjuszami. Miał prawo veta (intercessio) wobec każdej decyzji. Osoba święta i nietykalną.",badge:"b-green",badgeText:"Urzędy"},
+  {name:"Pax Romana",detail:"Epoka pokoju i prosperity w I–II w. n.e. za panowania Augusta i jego następców. Rzym rządził rozległym imperium przy względnym spokoju wewnętrznym.",badge:"b-amber",badgeText:"Pojęcie"},
+  {name:"Triumwirat",detail:"Porozumienie trzech polityków. I triumwirat (60 p.n.e.): Cezar, Pompejusz, Krassus – nieformalne. II triumwirat (43 p.n.e.): Oktawian, Antoniusz, Lepidus – oficjalne.",badge:"b-amber",badgeText:"Pojęcie"},
+  {name:"Res publica",detail:"'Rzecz publiczna' – republika. System rządów bez króla, z wybieralnymi urzędnikami i Senatem. Trwała 509–27 p.n.e.",badge:"b-amber",badgeText:"Pojęcie"},
+  {name:"Proskrypcje",detail:"Listy wrogów państwa – ogłaszane przez Sullę i II triumwirat. Wpisany na listę mógł zostać zabity przez każdego, a jego majątek przepadał na rzecz skarbu.",badge:"b-red",badgeText:"Pojęcie"},
+  {name:"Legiony",detail:"Podstawowe jednostki armii rzymskiej (~5000 żołnierzy). Po reformie Mariusza – armia zawodowa zamiast obywatelskiej. Żołnierze służyli 20 lat.",badge:"b-blue",badgeText:"Wojsko"},
+  {name:"Rubikon",detail:"Rzeka w północnej Italii. Prawo zakazywało przekroczenia z armią. Cezar przekroczył ją w 49 p.n.e. – to był bunt. 'Alea iacta est' – kości zostały rzucone.",badge:"b-amber",badgeText:"Pojęcie"},
+];
+
+function renderKarty(id, arr){
+  const g = document.getElementById(id);
+  arr.forEach((p,i)=>{
+    const d = document.createElement('div');
+    d.className='card';
+    d.innerHTML=`<span class="badge ${p.badge}">${p.badgeText}</span><div class="card-name">${p.name}</div><div class="card-dates">${p.dates||''}</div><div class="card-role">${p.role}</div><div class="card-detail">${p.detail}</div>`;
+    d.onclick=()=>{d.classList.toggle('open')};
+    g.appendChild(d);
+  });
+}
+
+function renderTimeline(){
+  const t = document.getElementById('timeline');
+  daty.forEach(d=>{
+    const div = document.createElement('div');
+    div.className='titem';
+    div.innerHTML=`<div class="tdate">${d.date}</div><div class="tevent">${d.event}</div><div class="tdesc">${d.desc}</div>`;
+    t.appendChild(div);
+  });
+}
+
+function renderPojecia(){
+  const g = document.getElementById('grid-pojecia');
+  pojecia.forEach(p=>{
+    const d = document.createElement('div');
+    d.className='card';
+    d.innerHTML=`<span class="badge ${p.badge}">${p.badgeText}</span><div class="card-name">${p.name}</div><div class="card-detail" style="display:block">${p.detail}</div>`;
+    g.appendChild(d);
+  });
+}
+
+function show(tab){
+  ['osoby','daty','pojecia'].forEach(t=>document.getElementById(t).style.display='none');
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById(tab).style.display='block';
+  event.target.classList.add('active');
+}
+
+renderKarty('grid-krolowie', osoby.krolowie);
+renderKarty('grid-republika', osoby.republika);
+renderKarty('grid-cesarstwo', osoby.cesarstwo);
+renderTimeline();
+renderPojecia();
+</script>
+
+</body>
+</html>
